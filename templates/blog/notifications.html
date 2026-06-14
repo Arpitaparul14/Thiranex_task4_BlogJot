@@ -1,0 +1,43 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="container" style="max-width:700px;">
+    <div style="text-align:center; padding:40px 0 30px;">
+        <h1 style="font-size:36px; font-weight:700; color:#7c3aed;">
+            <i class="fas fa-bell"></i> Notifications
+        </h1>
+        <p style="color:#666; font-size:15px; margin-top:10px;">Likes and comments on your posts</p>
+    </div>
+
+    {% if notifications %}
+        {% for notif in notifications %}
+        <div class="card" style="padding:20px 25px; margin-bottom:15px; border-left:4px solid {% if notif.is_read %}#d8b4fe{% else %}#7c3aed{% endif %};">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <div>
+                    {% if notif.notif_type == 'like' %}
+                    <i class="fas fa-heart" style="color:#ef4444; margin-right:8px;"></i>
+                    {% else %}
+                    <i class="fas fa-comment" style="color:#7c3aed; margin-right:8px;"></i>
+                    {% endif %}
+                    <span style="font-size:14px; color:#333;">{{ notif.message }}</span>
+                </div>
+                {% if not notif.is_read %}
+                <span style="background:#7c3aed; color:white; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600;">NEW</span>
+                {% endif %}
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:10px; align-items:center;">
+                <span style="font-size:12px; color:#999;"><i class="fas fa-clock"></i> {{ notif.created_at|date:"M d, Y h:i A" }}</span>
+                {% if notif.post %}
+                <a href="{% url 'post_detail' notif.post.slug %}" style="font-size:12px; color:#7c3aed; font-weight:600; text-decoration:none;">View Post →</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div style="text-align:center; padding:80px 20px;">
+            <i class="fas fa-bell-slash" style="font-size:60px; color:#d8b4fe;"></i>
+            <h3 style="color:#7c3aed; margin-top:20px;">No notifications yet!</h3>
+            <p style="color:#999; margin-top:10px;">When someone likes or comments on your post you'll see it here! 💜</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlogJot 💜</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f8f5ff; color: #333; }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #7c3aed, #9f67fa);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(124,58,237,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .navbar .logo span { color: #ffd700; }
+        .nav-links { display: flex; gap: 15px; align-items: center; }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover { background: rgba(255,255,255,0.2); }
+        .nav-links .btn-write {
+            background: white;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+        .nav-links .btn-write:hover { background: #ffd700; color: #333; }
+
+        /* Notification Badge */
+        .notif-badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 3px;
+            vertical-align: middle;
+        }
+
+        /* Messages */
+        .messages { padding: 10px 40px; }
+        .message {
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .message.success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .message.error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+
+        /* Main Container */
+        .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(124,58,237,0.08);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(124,58,237,0.15); }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 24px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-primary { background: linear-gradient(135deg, #7c3aed, #9f67fa); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(124,58,237,0.4); }
+        .btn-danger { background: linear-gradient(135deg, #ef4444, #f87171); color: white; }
+        .btn-danger:hover { transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 2px solid #7c3aed; color: #7c3aed; }
+        .btn-outline:hover { background: #7c3aed; color: white; }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #7c3aed, #9f67fa);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 60px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">Blog<span>Jot</span> 💜</a>
+        <div class="nav-links">
+            <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'notifications' %}">
+                    <i class="fas fa-bell"></i> Notifications
+                    {% if unread_count > 0 %}
+                        <span class="notif-badge">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+                <a href="{% url 'my_posts' %}"><i class="fas fa-book"></i> My Posts</a>
+                <a href="{% url 'post_create' %}" class="btn-write"><i class="fas fa-pen"></i> Write Post</a>
+                <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout ({{ user.username }})</a>
+            {% else %}
+                <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="{% url 'register' %}" class="btn-write"><i class="fas fa-user-plus"></i> Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        <p>💜 BlogJot — Made with love during Thiranex Internship by Arpita Parul</p>
+    </footer>
+</body>
+</html>

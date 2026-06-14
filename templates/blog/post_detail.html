@@ -1,0 +1,75 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="container" style="max-width:800px;">
+    <div class="card" style="padding:40px; margin-bottom:30px;">
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width:100%; height:350px; object-fit:cover; border-radius:12px; margin-bottom:25px;">
+        {% endif %}
+
+        {% if post.category %}
+        <span style="background:#ede9fe; color:#7c3aed; padding:5px 15px; border-radius:20px; font-size:13px; font-weight:600;">{{ post.category.name }}</span>
+        {% endif %}
+
+        <h1 style="font-size:32px; font-weight:700; color:#1a1a2e; margin:15px 0;">{{ post.title }}</h1>
+
+        <div style="display:flex; gap:20px; color:#999; font-size:13px; margin-bottom:25px; flex-wrap:wrap;">
+            <span><i class="fas fa-user-circle" style="color:#7c3aed;"></i> {{ post.author.username }}</span>
+            <span><i class="fas fa-calendar" style="color:#7c3aed;"></i> {{ post.created_at|date:"F d, Y" }}</span>
+            <span><i class="fas fa-heart" style="color:#ef4444;"></i> {{ like_count }} Likes</span>
+            <span><i class="fas fa-comment" style="color:#7c3aed;"></i> {{ comments.count }} Comments</span>
+        </div>
+
+        <div style="font-size:16px; line-height:1.9; color:#444; border-top:2px solid #f3f0ff; padding-top:25px;">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <!-- Like & Action Buttons -->
+        <div style="display:flex; gap:12px; margin-top:30px; flex-wrap:wrap;">
+            {% if user.is_authenticated %}
+                <a href="{% url 'like_post' post.slug %}" class="btn {% if liked %}btn-danger{% else %}btn-outline{% endif %}">
+                    <i class="fas fa-heart"></i> {% if liked %}Unlike{% else %}Like{% endif %} ({{ like_count }})
+                </a>
+                {% if user == post.author %}
+                <a href="{% url 'post_edit' post.slug %}" class="btn btn-outline"><i class="fas fa-edit"></i> Edit</a>
+                <a href="{% url 'post_delete' post.slug %}" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline"><i class="fas fa-heart"></i> Like ({{ like_count }})</a>
+            {% endif %}
+            <a href="{% url 'home' %}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="card" style="padding:30px; margin-bottom:20px;">
+        <h3 style="color:#7c3aed; margin-bottom:20px;"><i class="fas fa-comments"></i> Comments ({{ comments.count }})</h3>
+        {% for comment in comments %}
+        <div style="border-left:3px solid #7c3aed; padding:12px 18px; margin-bottom:15px; background:#f8f5ff; border-radius:0 10px 10px 0;">
+            <div style="font-size:13px; color:#7c3aed; font-weight:600; margin-bottom:5px;">
+                <i class="fas fa-user-circle"></i> {{ comment.author.username }}
+                <span style="color:#999; font-weight:400; margin-left:10px;">{{ comment.created_at|date:"M d, Y" }}</span>
+            </div>
+            <p style="color:#444; font-size:14px;">{{ comment.content }}</p>
+        </div>
+        {% empty %}
+        <p style="color:#999; text-align:center; padding:20px;">No comments yet. Be the first! 💜</p>
+        {% endfor %}
+    </div>
+
+    <!-- Add Comment -->
+    <div class="card" style="padding:30px;">
+        <h3 style="color:#7c3aed; margin-bottom:20px;"><i class="fas fa-pen"></i> Add a Comment</h3>
+        {% if user.is_authenticated %}
+        <form method="POST">
+            {% csrf_token %}
+            <textarea name="content" rows="4" placeholder="Write your comment here..." required
+                style="width:100%; padding:15px; border:2px solid #e9d5ff; border-radius:12px; font-family:'Poppins',sans-serif; font-size:14px; outline:none; resize:vertical; transition:border 0.3s;"
+                onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#e9d5ff'"></textarea>
+            <button type="submit" class="btn btn-primary" style="margin-top:12px;"><i class="fas fa-paper-plane"></i> Post Comment</button>
+        </form>
+        {% else %}
+        <p style="color:#666; text-align:center;">Please <a href="{% url 'login' %}" style="color:#7c3aed; font-weight:600;">login</a> to leave a comment.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

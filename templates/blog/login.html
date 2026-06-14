@@ -1,0 +1,45 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="container" style="max-width:440px;">
+    <div class="card" style="padding:40px;">
+        <div style="text-align:center; margin-bottom:30px;">
+            <i class="fas fa-sign-in-alt" style="font-size:40px; color:#7c3aed;"></i>
+            <h2 style="color:#1a1a2e; margin-top:10px;">Welcome Back! 💜</h2>
+            <p style="color:#999; font-size:13px;">Login to continue writing</p>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div style="margin-bottom:18px;">
+                <label style="display:block; font-weight:600; color:#444; margin-bottom:6px; font-size:14px;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <p style="color:#ef4444; font-size:12px; margin-top:4px;">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px; padding:13px;">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+        <p style="text-align:center; margin-top:20px; font-size:13px; color:#666;">
+            Don't have an account? <a href="{% url 'register' %}" style="color:#7c3aed; font-weight:600;">Register here</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9d5ff;
+        border-radius: 10px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.3s;
+        background: #faf5ff;
+    }
+    input:focus { border-color: #7c3aed; background: white; }
+</style>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="container">
+    <div style="text-align:center; padding:40px 0 30px;">
+        <h1 style="font-size:36px; font-weight:700; color:#7c3aed;">My Posts 💜</h1>
+        <p style="color:#666; font-size:16px; margin-top:10px;">All posts written by you</p>
+    </div>
+
+    {% if posts %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:25px;">
+        {% for post in posts %}
+        <div class="card">
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width:100%; height:200px; object-fit:cover;">
+            {% else %}
+            <div style="width:100%; height:200px; background:linear-gradient(135deg,#7c3aed,#9f67fa); display:flex; align-items:center; justify-content:center;">
+                <i class="fas fa-feather-alt" style="font-size:50px; color:white; opacity:0.7;"></i>
+            </div>
+            {% endif %}
+            <div style="padding:20px;">
+                {% if post.category %}
+                <span style="background:#ede9fe; color:#7c3aed; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">{{ post.category.name }}</span>
+                {% endif %}
+                <h2 style="font-size:18px; font-weight:700; margin:12px 0 8px; color:#1a1a2e;">{{ post.title }}</h2>
+                <p style="color:#666; font-size:13px; line-height:1.6;">{{ post.content|truncatewords:20 }}</p>
+                <div style="display:flex; gap:10px; margin-top:8px;">
+                    <span style="font-size:12px; color:#999;"><i class="fas fa-heart" style="color:#ef4444;"></i> {{ post.likes.count }}</span>
+                    <span style="font-size:12px; color:#999;"><i class="fas fa-comment" style="color:#7c3aed;"></i> {{ post.comments.count }}</span>
+                    <span style="font-size:12px; color:#999;"><i class="fas fa-calendar" style="color:#7c3aed;"></i> {{ post.created_at|date:"M d, Y" }}</span>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:15px; flex-wrap:wrap;">
+                    <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary" style="font-size:13px;">View</a>
+                    <a href="{% url 'post_edit' post.slug %}" class="btn btn-outline" style="font-size:13px;">Edit</a>
+                    <a href="{% url 'post_delete' post.slug %}" class="btn btn-danger" style="font-size:13px;">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center; padding:80px 20px;">
+        <i class="fas fa-feather-alt" style="font-size:60px; color:#d8b4fe;"></i>
+        <h3 style="color:#7c3aed; margin-top:20px;">No posts yet!</h3>
+        <p style="color:#999; margin-top:10px;">Start writing your first post!</p>
+        <a href="{% url 'post_create' %}" class="btn btn-primary" style="margin-top:20px;">Write First Post 💜</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

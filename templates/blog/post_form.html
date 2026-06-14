@@ -1,0 +1,42 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="container" style="max-width:700px;">
+    <div class="card" style="padding:40px;">
+        <h2 style="color:#7c3aed; margin-bottom:25px; font-size:28px;">
+            <i class="fas fa-pen-fancy"></i> {{ action }} Post
+        </h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-weight:600; color:#444; margin-bottom:6px; font-size:14px;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <p style="color:#ef4444; font-size:12px; margin-top:4px;">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div style="display:flex; gap:12px; margin-top:10px;">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> {{ action }} Post</button>
+                <a href="{% url 'home' %}" class="btn btn-outline"><i class="fas fa-times"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    input[type="text"], input[type="file"], select, textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9d5ff;
+        border-radius: 10px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.3s;
+        background: #faf5ff;
+    }
+    input:focus, select:focus, textarea:focus { border-color: #7c3aed; background: white; }
+    input[type="checkbox"] { width: auto; margin-right: 8px; accent-color: #7c3aed; }
+</style>
+{% endblock %}
